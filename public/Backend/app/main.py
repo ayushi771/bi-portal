@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from .database import engine, Base
 from .routes import admin, users  # Import both routers
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import superset
+from app.routes.ai import router as ai_router
 app = FastAPI(title="Advanced Admin Panel")
 origins = [
     "http://localhost:3000",
@@ -16,16 +18,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# -------------------------------
-# Create tables on startup
-# -------------------------------
+
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-# -------------------------------
-# Include routers
-# -------------------------------
-app.include_router(admin.router)  # Admin routes
-app.include_router(users.router)  # User routes
+
+app.include_router(admin.router) 
+app.include_router(users.router) 
+app.include_router(ai_router)
+app.include_router(superset.router)

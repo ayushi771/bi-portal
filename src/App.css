@@ -62,10 +62,11 @@ body {
   background: #f5f7fb;
 }
 
-/* Navbar container */
 .navbar {
   height: 60px;
-  width: 1470px;
+  width: 100%; 
+  max-width: 1470px;         /* was 1470px, which caused horizontal overflow */
+  margin: 0;
   background: #111827;
   display: flex;
   align-items: center;
@@ -98,9 +99,10 @@ body {
   color: #60a5fa;
 }
 
-/* Page content */
 .main-content {
-  padding: 30px;
+  padding: 0;          /* 🔥 REMOVE SIDE PADDING */
+  width: 100%;
+  height: calc(100vh - 60px);  /* minus navbar height */
 }
 .nav-item.active {
   color: #60a5fa;
@@ -163,11 +165,67 @@ body {
   font-size: 15px;
 }
 
-.username {
-  font-size: 14px;
-  opacity: 0.8;
-  color:#e5e7eb;
+/* Wrapper */
+.avatar-wrapper {
+  position: relative;
 }
+
+/* Avatar */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  width: 220px;
+
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  overflow: hidden;
+  z-index: 100;
+}
+
+/* Header */
+.dropdown-header {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.email {
+  font-size: 12px;
+  color: #64748b;
+}
+
+
+.dropdown-item {
+  padding: 10px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
 
 
 .login {
@@ -180,6 +238,15 @@ body {
   color: white;
 }
 
-.btn:hover {
-  opacity: 0.85;
+
+iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
+}
+
+/* Remove container constraints */
+body, html, #root {
+  height: 100%;
+  width: 100%;
 }
