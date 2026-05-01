@@ -1,6 +1,12 @@
 # app/routes/superset.py
-from fastapi import APIRouter
+import json
+from datetime import datetime
+from typing import Dict, Set
+from fastapi import Request
+import base64
+from fastapi import APIRouter , Query
 import requests
+from fastapi import Request
 
 router = APIRouter(prefix="/superset", tags=["Superset"])
 
@@ -8,10 +14,7 @@ SUPERSET_URL = "http://localhost:8088"
 USERNAME = "admin"
 PASSWORD = "admin"
 
-# 🔥 REMOVE THIS LINE
-# DASHBOARD_ID = "2d1f2f5b-2974-434c-9f7a-53a3ab263310"
 
-# ✅ ADD dashboard_id parameter
 @router.get("/token/{dashboard_id}")
 def get_superset_token(dashboard_id: str):
     session = requests.Session()
@@ -55,3 +58,47 @@ def get_superset_token(dashboard_id: str):
         return {"token": guest_json["token"]}
     else:
         return {"error": "Failed to get guest token", "details": guest_json}
+
+
+favorites_by_user: Dict[str, Set[str]] = {}
+
+def _user_key_from_request(request: Request) -> str:
+    """
+    Derive a user key from Authorization header token.
+    This decodes the JWT payload WITHOUT verification (only for identifying user in-memory).
+    In production use proper token verification or call Superset /whoami.
+    """
+    auth = request.headers.get("authorization") or request.headers.get("Authorization")
+    if not auth or not auth.startswith("Bearer "):
+        return "anonymous"  # fallback
+    token = auth.split(" ", 1)[1].strip()
+    try:
+        payload_b64 = token.split(".")[1]
+        payload_b64 += "=" * (-len(payload_b64) % 4)
+        payload_json = base64.urlsafe_b64decode(payload_b64).decode("utf-8")
+        claims = json.loads(payload_json)
+        # prefer "sub", fallback to username or a portion of token
+        return str(claims.get("sub") or claims.get("username") or claims.get("user") or token[:16])
+    except Exception:
+        # if decode fails, fallback to token prefix
+        return token[:16]
+
+@router.post("/favorites/{dashboard_id}")
+def toggle_favorite(dashboard_id: str, request: Request):
+    user_key = _user_key_from_request(request)
+    user_set = favorites_by_user.setdefault(user_key, set())
+    if dashboard_id in user_set:
+        user_set.remove(dashboard_id)
+        is_fav = False
+    else:
+        user_set.add(dashboard_id)
+        is_fav = True
+    # persist back (not needed for setdefault usage)
+    favorites_by_user[user_key] = user_set
+    return {"isFavorite": is_fav}
+
+@router.get("/favorites/{dashboard_id}")
+def get_favorite(dashboard_id: str, request: Request):
+    user_key = _user_key_from_request(request)
+    user_set = favorites_by_user.get(user_key, set())
+    return {"isFavorite": dashboard_id in user_set}

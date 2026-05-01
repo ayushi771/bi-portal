@@ -18,10 +18,10 @@ def _truncate_to_bcrypt_bytes(password: str) -> bytes:
     return b[:MAX_BCRYPT_PASSWORD_BYTES]
 
 def get_password_hash(password: str):
-    return pwd_context.hash(password)
+    return pwd_context.hash(_truncate_to_bcrypt_bytes(password))
 
 def verify_password(plain_password: str, hashed_password: str):
-    return pwd_context.verify(plain_password, hashed_password)
+    return pwd_context.verify(_truncate_to_bcrypt_bytes(plain_password), hashed_password)
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()

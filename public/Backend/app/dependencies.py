@@ -1,3 +1,4 @@
+# backend/app/dependencies.py
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
@@ -9,9 +10,38 @@ from .database import get_db
 from .models import User as UserModel
 from .config import SECRET_KEY, ALGORITHM
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/users/login",
+    auto_error=False   # 🔥 THIS FIXES 401
+)
 
+from typing import Optional
 
+async def get_current_user_optional(
+    token: Optional[str] = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db)
+):
+    if not token:
+        return None
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = int(payload.get("sub"))
+    except:
+        return None
+
+    result = await db.execute(
+        select(UserModel)
+        .options(selectinload(UserModel.role))
+        .where(UserModel.id == user_id)
+    )
+
+    user = result.scalar_one_or_none()
+
+    if not user or not getattr(user, "is_active", True):
+        return None
+
+    return user
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db)
@@ -38,6 +68,10 @@ async def get_current_user(
     user = result.scalar_one_or_none()
 
     if user is None:
+        raise credentials_exception
+
+    # Reject inactive users (treat as invalid credentials)
+    if not getattr(user, "is_active", True):
         raise credentials_exception
 
     return user
