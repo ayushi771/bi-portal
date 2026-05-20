@@ -45,13 +45,16 @@ The repo is organized into backend (API) and frontend (UI) areas.
 
 
 - Home page 
-  ![Home](public/Backend/app/docs/screenshots/Home.png)
+ <img width="1918" height="947" alt="image" src="https://github.com/user-attachments/assets/11edf080-9a58-433f-9b53-6962064fa8f9" />
+
 
 - Admin — User Provisioning page  
-  ![Admin - User Provisioning](public/Backend/app/docs/screenshots/user_provisioning.png)
+  <img width="1877" height="960" alt="image" src="https://github.com/user-attachments/assets/dbc6fe2f-e05a-4e40-814a-5a45b814fdef" />
+
 
 - Dashboard page(embedded Superset)  
-  ![Dashboard](public/Backend/app/docs/screenshots/Dashboard_page.png)
+ <img width="1920" height="1021" alt="image" src="https://github.com/user-attachments/assets/eb85e809-9f53-4366-ba6a-756b4933aaf9" />
+
 
 ---
 
