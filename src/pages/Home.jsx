@@ -63,7 +63,7 @@ export default function Home({ user, role }) {
   const storageKey = storageKeyForUser(userKey);
   const currentRole = normalizeRole(role);
   const [favorites, setFavorites] = useState({}); // view for current role only
-
+  
   // Load role favorites, migrate if needed
   const loadRoleFavorites = useCallback(() => {
     const all = readAllFavs(storageKey);
@@ -142,7 +142,8 @@ export default function Home({ user, role }) {
 
     const all = readAllFavs(storageKey);
     const roleKey = currentRole || "anon";
-    const roleMap = all[roleKey] ? { ...all[roleKey] } : {};
+    // copy role map so we don't mutate objects from storage directly
+    const roleMap = all && all[roleKey] ? { ...all[roleKey] } : {};
 
     const prev = !!roleMap[dashboardId];
     if (prev) delete roleMap[dashboardId];
@@ -151,7 +152,14 @@ export default function Home({ user, role }) {
     const nextAll = { ...(all || {}), [roleKey]: roleMap };
     writeAllFavs(storageKey, nextAll);
 
-    setFavorites(roleMap);
+    // Build a cleaned view filtered by allowed dashboards for this role
+    const cleaned = {};
+    Object.keys(roleMap || {}).forEach((did) => {
+      if (allowedForRole(did, currentRole)) cleaned[did] = true;
+    });
+
+    setFavorites(cleaned);
+
     // dispatch role-aware event (important)
     window.dispatchEvent(new CustomEvent("favorites-updated", { detail: { userKey, role: roleKey, dashboardId, isFavorite: !prev } }));
 

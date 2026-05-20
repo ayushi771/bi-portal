@@ -6,3 +6,5 @@ psycopg2-binary
 passlib[bcrypt]
 python-jose
 pydantic
+pandas
+openpyxl

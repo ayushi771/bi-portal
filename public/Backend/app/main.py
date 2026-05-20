@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .routes import admin, users, roles
 from app.routes import superset
+from app.routes import data_pipeline
+
 
 import logging
 from dotenv import load_dotenv
@@ -42,3 +44,4 @@ app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(roles.router)
 app.include_router(superset.router)
+app.include_router(data_pipeline.router)
