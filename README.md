@@ -41,7 +41,7 @@ The repo is organized into backend (API) and frontend (UI) areas.
 ## Screenshots
 
 - Login page  
-<img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/6fdc8af6-e8b2-43e3-a99f-9571fd4300bf" />
+<img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/6fdc8af6-e8b2-43e3-a99f-9571fd4300bf" />
 
 
 - Home page 
