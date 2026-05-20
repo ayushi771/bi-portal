@@ -60,6 +60,7 @@ def get_superset_token(dashboard_id: str):
         return {"error": "Failed to get guest token", "details": guest_json}
 
 
+
 favorites_by_user: Dict[str, Set[str]] = {}
 
 def _user_key_from_request(request: Request) -> str:

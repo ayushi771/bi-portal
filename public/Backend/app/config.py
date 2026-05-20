@@ -8,6 +8,7 @@ DATABASE_URL = (
     f"{os.getenv('POSTGRES_PORT','5432')}/"
     f"{os.getenv('POSTGRES_DB','herodb')}"
 )
+
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
