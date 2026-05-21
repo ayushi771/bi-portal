@@ -31,6 +31,9 @@ engine = create_engine(SYNC_DATABASE_URL)
 # ------------------------
 DATA_SOURCES = {
     "hiring": r"C:\Users\Ayushi\Downloads\hiringrelated.xlsx",
+    "employee": r"C:\Users\Ayushi\Downloads\mine.xlsx",
+    "projects": r"C:\Users\Ayushi\Downloads\it_projects_dataset_matched_managers (1).xlsx",
+    "performance": r"C:\Users\Ayushi\Downloads\performnce evaluation dataset 2025 year.csv"
 }
 
 # ------------------------

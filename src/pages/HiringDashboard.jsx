@@ -203,12 +203,15 @@ const styles = {
   },
 
   editBtn: {
-    padding: "10px 16px",
-    borderRadius: "20px",
-    background: "linear-gradient(90deg, #6366f1, #ec4899)",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
+     padding: "10px 16px",
+      borderRadius: 999,
+      background: " linear-gradient(90deg, #6366f1, #ec4899)",
+      color: "#fff",
+      fontWeight: 700,
+      border: "none",
+      cursor: "pointer",
+      marginLeft: 900,
+      flexWrap: "wrap"
   },
 
   star: { fontSize: "18px" },
